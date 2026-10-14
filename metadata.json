@@ -1,0 +1,6 @@
+{
+  "name": "BladeCycle",
+  "description": "Engineering decision-support system for comparing end-of-life recycling pathways for GFRP wind turbine blade waste.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
