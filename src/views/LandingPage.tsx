@@ -14,19 +14,23 @@ import {
   ChevronRight,
   Flame,
   Factory,
-  Cpu
+  Cpu,
+  Sparkles
 } from 'lucide-react';
-import { EVIDENCE_SOURCES } from '../lib/constants';
+import { EVIDENCE_SOURCES, PRESET_SCENARIOS } from '../lib/constants';
+import { Scenario } from '../types';
 
 interface LandingPageProps {
   onStartAnalysis: () => void;
   onExploreDemo: () => void;
+  onLoadPreset?: (scenario: Scenario) => void;
   onNavigate: (view: AppView) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onStartAnalysis,
   onExploreDemo,
+  onLoadPreset,
   onNavigate,
 }) => {
   return (
@@ -59,7 +63,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               onClick={onExploreDemo}
               className="w-full sm:w-auto px-6 py-3.5 text-sm font-semibold rounded-xl bg-white hover:bg-slate-50 text-[#123B32] border border-[#DCE5DF] shadow-xs transition-colors flex items-center justify-center gap-2"
             >
-              <span>Explore Illustrative Demo (100 t)</span>
+              <Sparkles className="w-4 h-4 text-[#A96512]" />
+              <span>Explore Instant Demo (100 t)</span>
+            </button>
+          </div>
+
+          {/* Quick Presets Bar */}
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <span className="text-[#64716C]">Or jump to preset:</span>
+            <button
+              onClick={() => {
+                const s = PRESET_SCENARIOS[1];
+                if (s && onLoadPreset) onLoadPreset(s);
+                else onExploreDemo();
+              }}
+              className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE5DF] text-[#182522] hover:bg-[#EAF5EF] hover:border-[#176B5B] transition-colors"
+            >
+              🌊 Offshore Blade (30 t)
+            </button>
+            <button
+              onClick={() => {
+                const s = PRESET_SCENARIOS[2];
+                if (s && onLoadPreset) onLoadPreset(s);
+                else onExploreDemo();
+              }}
+              className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE5DF] text-[#182522] hover:bg-[#EAF5EF] hover:border-[#176B5B] transition-colors"
+            >
+              🏭 Wind Farm Repowering (350 t)
+            </button>
+            <button
+              onClick={() => {
+                const s = PRESET_SCENARIOS[3];
+                if (s && onLoadPreset) onLoadPreset(s);
+                else onExploreDemo();
+              }}
+              className="px-2.5 py-1 rounded-lg bg-white border border-[#DCE5DF] text-[#182522] hover:bg-[#EAF5EF] hover:border-[#176B5B] transition-colors"
+            >
+              🔧 Local Rotor Repair (10 t)
             </button>
           </div>
 

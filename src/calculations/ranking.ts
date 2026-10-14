@@ -49,6 +49,7 @@ export function calculateRanking(
       isDefensible: false,
       defensibilityNotes: ['No pathways selected or calculated.'],
       weightsUsed: {},
+      policyUsed: 'No pathways to rank.',
     };
   }
 
@@ -60,6 +61,7 @@ export function calculateRanking(
       isDefensible: false,
       defensibilityNotes: ['Total criteria weight must be greater than zero.'],
       weightsUsed: {},
+      policyUsed: 'Invalid weight distribution.',
     };
   }
 
@@ -297,5 +299,6 @@ export function calculateRanking(
     isDefensible: defensibilityNotes.length === 0,
     defensibilityNotes,
     weightsUsed: normalizedWeights,
+    policyUsed: 'Proportional weight renormalization across verified available criteria (missing data is never assumed as zero).',
   };
 }

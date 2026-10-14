@@ -3,11 +3,13 @@ export type DistanceUnit = 'km' | 'miles';
 export type CurrencyCode = 'EUR' | 'USD' | 'INR' | 'GBP';
 
 export type DataClassification = 
-  | 'published'       // Extracted from peer-reviewed source with verified conditions
-  | 'derived'         // Calculated deterministically from other parameters
-  | 'user_assumption' // User entered or configured
-  | 'illustrative'    // Marked for demonstration only
-  | 'unavailable';    // Required parameter missing / not reported
+  | 'verified_against_source' // Audited against original paper/table
+  | 'published'               // Extracted from peer-reviewed source
+  | 'derived'                 // Calculated deterministically from other parameters
+  | 'user_assumption'         // User entered or configured
+  | 'illustrative'            // Marked for demonstration only
+  | 'unverified'              // Awaiting verification
+  | 'unavailable';            // Required parameter missing / not reported
 
 export type ValidationStatus = 'pass' | 'warning' | 'fail' | 'incomplete';
 
@@ -20,6 +22,8 @@ export interface EvidenceSource {
   publicationYear: number;
   publisher: string;
   verified: boolean;
+  verificationNotes?: string;
+  originalReportedUnits?: string;
   notes?: string;
 }
 
@@ -35,6 +39,8 @@ export interface ProcessParameter {
   studyConditions?: string;
   functionalUnit?: string;
   systemBoundary?: string;
+  originalReportedValue?: string;
+  conversionFormula?: string;
   uncertaintyNotes?: string;
   version: string;
 }
@@ -192,4 +198,35 @@ export interface RankingResult {
   isDefensible: boolean;
   defensibilityNotes: string[];
   weightsUsed: Record<string, number>;
+  policyUsed: string;
+}
+
+export interface BreakEvenAnalysisResult {
+  pathwayPair: [string, string];
+  pathwayNames: [string, string];
+  hasCrossover: boolean;
+  breakEvenDistanceKm: number | null;
+  isDistancePhysicallyFeasible: boolean;
+  breakEvenSecondaryPricePerTonne: number | null;
+  explanation: string;
+  mathematicalDerivation: string;
+}
+
+export interface MonteCarloSimulationRun {
+  numIterations: number;
+  seed: number;
+  parameterDistributions: {
+    parameterName: string;
+    distribution: 'triangular' | 'uniform';
+    min: number;
+    mode: number;
+    max: number;
+    unit: string;
+  }[];
+  pathwayPercentiles: Record<string, {
+    netCost: { p10: number; p50: number; p90: number };
+    recoveredMassKg: { p10: number; p50: number; p90: number };
+    rankProbabilities: { rank1Pct: number; rank2Pct: number; rank3Pct: number };
+  }>;
+  insights: string[];
 }

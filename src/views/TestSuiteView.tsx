@@ -18,6 +18,12 @@ export const TestSuiteView: React.FC = () => {
   const totalPassed = testResults.filter(t => t.passed).length;
   const allPassed = totalPassed === testResults.length;
 
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+
+  const filteredTests = testResults.filter(
+    t => categoryFilter === 'all' || t.category === categoryFilter
+  );
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       {/* Header */}
@@ -30,7 +36,7 @@ export const TestSuiteView: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-[#64716C] mt-1">
-            Validating input constraints, mass conservation tolerance, gross/net cost math, missing-data honesty, and MCDA ranking integrity.
+            Validating input constraints, mass conservation tolerance, gross/net cost math, break-even crossover, missing-data honesty, and MCDA ranking integrity.
           </p>
         </div>
 
@@ -73,18 +79,36 @@ export const TestSuiteView: React.FC = () => {
         </div>
       </div>
 
+      {/* Category Filter Chips */}
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="font-semibold text-[#64716C]">Filter Category:</span>
+        {['all', 'input', 'material', 'mass_balance', 'costs', 'emissions', 'ranking', 'uncertainty', 'reporting'].map(cat => (
+          <button
+            key={cat}
+            onClick={() => setCategoryFilter(cat)}
+            className={`px-2.5 py-1 rounded-lg border font-medium capitalize transition-colors ${
+              categoryFilter === cat
+                ? 'bg-[#123B32] text-white border-[#123B32]'
+                : 'bg-white text-[#182522] border-[#DCE5DF] hover:bg-[#F7F9F6]'
+            }`}
+          >
+            {cat.replace('_', ' ')}
+          </button>
+        ))}
+      </div>
+
       {/* Tests Breakdown Table */}
       <div className="bg-white rounded-xl border border-[#DCE5DF] overflow-hidden shadow-xs">
         <div className="px-6 py-4 border-b border-[#DCE5DF] flex items-center justify-between">
           <h3 className="font-semibold text-sm text-[#182522] flex items-center gap-2">
             <Terminal className="w-4 h-4 text-[#176B5B]" />
-            <span>Executed Test Assertions</span>
+            <span>Executed Test Assertions ({filteredTests.length} shown)</span>
           </h3>
-          <span className="text-xs font-mono text-[#64716C]">PRD Section 11 Compliance</span>
+          <span className="text-xs font-mono text-[#64716C]">PRD Section 12 Verification</span>
         </div>
 
         <div className="divide-y divide-[#DCE5DF]">
-          {testResults.map((t, idx) => (
+          {filteredTests.map((t, idx) => (
             <div key={idx} className="p-4 flex items-start justify-between gap-4 text-xs hover:bg-[#F7F9F6]/60 transition-colors">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">

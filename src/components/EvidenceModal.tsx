@@ -64,6 +64,23 @@ export const EvidenceModal: React.FC<EvidenceModalProps> = ({ parameter, onClose
               </div>
             </div>
 
+            {(parameter.originalReportedValue || parameter.conversionFormula) && (
+              <div className="mt-3 pt-2.5 border-t border-[#DCE5DF]/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
+                {parameter.originalReportedValue && (
+                  <div>
+                    <span className="text-[#64716C] font-sans block">Original Reported Value:</span>
+                    <span className="font-semibold text-[#182522]">{parameter.originalReportedValue}</span>
+                  </div>
+                )}
+                {parameter.conversionFormula && (
+                  <div>
+                    <span className="text-[#64716C] font-sans block">Conversion Formula:</span>
+                    <span className="text-[#245D8A]">{parameter.conversionFormula}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mt-4 pt-3 border-t border-[#DCE5DF]/60 flex items-center justify-between">
               <span className="text-xs text-[#64716C]">Data Classification:</span>
               <StatusBadge type="classification" value={parameter.classification} />

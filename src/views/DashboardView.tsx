@@ -17,6 +17,7 @@ import {
   BarChart3,
   CheckCircle2
 } from 'lucide-react';
+import { PRESET_SCENARIOS } from '../lib/constants';
 
 interface DashboardViewProps {
   scenarios: Scenario[];
@@ -24,6 +25,7 @@ interface DashboardViewProps {
   onSelectScenario: (id: string) => void;
   onNewAnalysis: () => void;
   onLoadDemo: () => void;
+  onLoadPreset?: (scenario: Scenario) => void;
   onDuplicateScenario: (id: string) => void;
   onDeleteScenario: (id: string) => void;
   onNavigate: (view: AppView) => void;
@@ -35,6 +37,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onSelectScenario,
   onNewAnalysis,
   onLoadDemo,
+  onLoadPreset,
   onDuplicateScenario,
   onDeleteScenario,
   onNavigate,
@@ -73,6 +76,37 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <PlusCircle className="w-3.5 h-3.5" />
             <span>New Analysis</span>
           </button>
+        </div>
+      </div>
+
+      {/* 1-Click Instant Presets */}
+      <div className="bg-white border border-[#DCE5DF] rounded-xl p-4 shadow-xs space-y-2.5">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-[#123B32] flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#A96512]" />
+            <span>Quick-Load Realistic Presets:</span>
+          </span>
+          <span className="text-[11px] text-[#64716C]">Click any to load and analyze instantly</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {PRESET_SCENARIOS.map((preset) => (
+            <button
+              key={preset.id}
+              onClick={() => {
+                if (onLoadPreset) onLoadPreset(preset);
+                else {
+                  onSelectScenario(preset.id);
+                  onNavigate('compare');
+                }
+              }}
+              className="p-2 rounded-lg border border-[#DCE5DF] bg-[#F7F9F6] hover:bg-[#EAF5EF] hover:border-[#176B5B] text-left transition-colors"
+            >
+              <div className="font-semibold text-xs text-[#182522] truncate">{preset.name.split(' (')[0]}</div>
+              <div className="text-[11px] font-mono text-[#176B5B] mt-0.5">
+                {preset.inputMass} {preset.inputMassUnit} · {preset.transportDistance} {preset.transportDistanceUnit}
+              </div>
+            </button>
+          ))}
         </div>
       </div>
 

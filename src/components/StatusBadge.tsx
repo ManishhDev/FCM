@@ -12,11 +12,25 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ type, value, showIcon 
   // Respecting anti-slop zero-pill discipline: Clean typography with subtle indicator, not garish candy pills
   if (type === 'classification') {
     switch (value) {
+      case 'verified_against_source':
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#176B5B]">
+            {showIcon && <CheckCircle2 className="w-3.5 h-3.5 text-[#53A878]" />}
+            <span>Verified Against Source</span>
+          </span>
+        );
       case 'published':
         return (
           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#176B5B]">
             {showIcon && <CheckCircle2 className="w-3.5 h-3.5 text-[#176B5B]" />}
             <span>Peer-Reviewed Source</span>
+          </span>
+        );
+      case 'unverified':
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700">
+            {showIcon && <AlertTriangle className="w-3.5 h-3.5 text-amber-700" />}
+            <span>Unverified / Preliminary</span>
           </span>
         );
       case 'derived':

@@ -18,6 +18,7 @@ import {
   X
 } from 'lucide-react';
 import { UserGuideModal } from './UserGuideModal';
+import { TeacherPresentationModal } from './TeacherPresentationModal';
 
 export type AppView = 
   | 'landing' 
@@ -39,6 +40,7 @@ interface NavbarProps {
   activeScenarioId: string | null;
   onSelectScenario: (id: string) => void;
   onLoadDemo: () => void;
+  onLoadScenario?: (scenario: Scenario) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -48,20 +50,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeScenarioId,
   onSelectScenario,
   onLoadDemo,
+  onLoadScenario,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [teacherModalOpen, setTeacherModalOpen] = useState(false);
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
 
   const navItems = [
-    { id: 'dashboard' as AppView, label: 'Dashboard', icon: BarChart3 },
-    { id: 'builder' as AppView, label: 'New Analysis', icon: PlusCircle },
-    { id: 'compare' as AppView, label: 'Comparison', icon: Layers, requiresScenario: true },
+    { id: 'compare' as AppView, label: 'Workspace', icon: Layers, requiresScenario: true },
     { id: 'recommendation' as AppView, label: 'Decision Ranking', icon: Scale, requiresScenario: true },
     { id: 'sensitivity' as AppView, label: 'Sensitivity', icon: SlidersHorizontal, requiresScenario: true },
-    { id: 'scenario_compare' as AppView, label: 'Compare Batches', icon: GitCompare },
-    { id: 'evidence' as AppView, label: 'Evidence Library', icon: BookOpen },
-    { id: 'methodology' as AppView, label: 'Methodology', icon: FileText },
+    { id: 'dashboard' as AppView, label: 'Saved Batches', icon: BarChart3 },
+    { id: 'evidence' as AppView, label: 'Evidence & Science', icon: BookOpen },
   ];
 
   const handleNavClick = (view: AppView) => {
@@ -152,6 +153,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </select>
               </div>
             )}
+
+            {/* Teacher Demo & Script Trigger */}
+            <button
+              onClick={() => setTeacherModalOpen(true)}
+              className="px-2.5 py-1.5 text-xs rounded-lg border border-[#53A878]/50 bg-[#EAF5EF] hover:bg-[#d8ede1] text-[#123B32] transition-colors flex items-center gap-1.5 font-bold shadow-2xs"
+              title="How to present and explain to teacher + Live Demo Script"
+            >
+              <span className="text-sm">🎓</span>
+              <span>Teacher Demo & Script</span>
+            </button>
 
             {/* How to use Guide Trigger */}
             <button
@@ -244,22 +255,45 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          <div className="pt-4 border-t border-[#DCE5DF] flex gap-2">
+          <div className="pt-4 border-t border-[#DCE5DF] flex flex-col gap-2">
             <button
-              onClick={() => handleNavClick('builder')}
-              className="flex-1 py-2 text-xs font-semibold rounded-lg bg-[#123B32] text-white text-center"
+              onClick={() => {
+                setTeacherModalOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full py-2.5 text-xs font-bold rounded-lg bg-[#EAF5EF] text-[#123B32] border border-[#176B5B]/30 text-center flex items-center justify-center gap-2"
             >
-              New Analysis
+              <span>🎓</span>
+              <span>Teacher Presentation & Demo Script</span>
             </button>
-            <button
-              onClick={() => handleNavClick('test_suite')}
-              className="px-3 py-2 text-xs font-medium rounded-lg border border-[#DCE5DF] text-[#182522]"
-            >
-              Run Tests
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleNavClick('builder')}
+                className="flex-1 py-2 text-xs font-semibold rounded-lg bg-[#123B32] text-white text-center"
+              >
+                New Analysis
+              </button>
+              <button
+                onClick={() => handleNavClick('test_suite')}
+                className="px-3 py-2 text-xs font-medium rounded-lg border border-[#DCE5DF] text-[#182522]"
+              >
+                Run Tests
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+      {/* Teacher Presentation & Live Demo Suite Modal */}
+      <TeacherPresentationModal
+        isOpen={teacherModalOpen}
+        onClose={() => setTeacherModalOpen(false)}
+        onNavigate={handleNavClick}
+        onLoadScenario={(sc) => {
+          if (onLoadScenario) onLoadScenario(sc);
+          else onLoadDemo();
+        }}
+      />
 
       {/* Interactive In-App User Guide Modal */}
       <UserGuideModal

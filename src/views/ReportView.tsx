@@ -1,9 +1,9 @@
 import React from 'react';
 import { Scenario, ScenarioCalculationRun } from '../types';
 import { DEFAULT_CRITERIA, calculateRanking } from '../calculations/ranking';
-import { generateCSVReport, downloadCSV, incrementExportedReportsCount } from '../lib/scenarioStorage';
+import { generateCSVReport, downloadCSV, exportScenarioToJSON, downloadJSON, incrementExportedReportsCount } from '../lib/scenarioStorage';
 import { EVIDENCE_SOURCES } from '../lib/constants';
-import { Download, Printer, Wind, CheckCircle2, AlertTriangle, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Download, Printer, Wind, CheckCircle2, AlertTriangle, ShieldCheck, ArrowLeft, FileJson } from 'lucide-react';
 
 interface ReportViewProps {
   scenario: Scenario;
@@ -26,6 +26,13 @@ export const ReportView: React.FC<ReportViewProps> = ({
     downloadCSV(`bladecycle_${safeName}_${dateStr}.csv`, csvContent);
   };
 
+  const handleDownloadJSON = () => {
+    const jsonContent = exportScenarioToJSON(scenario);
+    const safeName = scenario.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const dateStr = new Date().toISOString().split('T')[0];
+    downloadJSON(`bladecycle_scenario_${safeName}_${dateStr}.json`, jsonContent);
+  };
+
   const handlePrint = () => {
     incrementExportedReportsCount();
     window.print();
@@ -40,23 +47,31 @@ export const ReportView: React.FC<ReportViewProps> = ({
           className="px-3.5 py-1.5 text-xs font-medium rounded-lg border border-[#DCE5DF] bg-white hover:bg-[#F7F9F6] text-[#182522] flex items-center gap-1.5 self-start"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Comparison</span>
+          <span>Back to Workspace</span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={handleDownloadJSON}
+            className="px-3.5 py-2 text-xs font-semibold rounded-lg border border-[#DCE5DF] bg-white hover:bg-[#F7F9F6] text-[#182522] transition-colors flex items-center gap-1.5 shadow-xs"
+            title="Export exact JSON configuration file"
+          >
+            <FileJson className="w-3.5 h-3.5 text-[#245D8A]" />
+            <span>Config JSON</span>
+          </button>
           <button
             onClick={handleDownloadCSV}
-            className="px-4 py-2 text-xs font-semibold rounded-lg border border-[#DCE5DF] bg-white hover:bg-[#F7F9F6] text-[#182522] transition-colors flex items-center gap-1.5 shadow-xs"
+            className="px-3.5 py-2 text-xs font-semibold rounded-lg border border-[#DCE5DF] bg-white hover:bg-[#F7F9F6] text-[#182522] transition-colors flex items-center gap-1.5 shadow-xs"
           >
             <Download className="w-3.5 h-3.5 text-[#176B5B]" />
-            <span>Download CSV Dataset</span>
+            <span>CSV Dataset</span>
           </button>
           <button
             onClick={handlePrint}
             className="px-4 py-2 text-xs font-semibold rounded-lg bg-[#123B32] hover:bg-[#176B5B] text-white transition-colors flex items-center gap-1.5 shadow-xs"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Print Formatted Report / Save PDF</span>
+            <span>Print Formatted Report / PDF</span>
           </button>
         </div>
       </div>

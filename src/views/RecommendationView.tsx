@@ -28,6 +28,7 @@ export const RecommendationView: React.FC<RecommendationViewProps> = ({
   const [maxCostConstraint, setMaxCostConstraint] = useState<number | undefined>(undefined);
   const [minRecoveryConstraint, setMinRecoveryConstraint] = useState<number | undefined>(undefined);
   const [requireMassBalancePass, setRequireMassBalancePass] = useState<boolean>(true);
+  const [showTeacherScript, setShowTeacherScript] = useState<boolean>(false);
 
   // Update a single weight
   const handleWeightChange = (id: string, newWeight: number) => {
@@ -51,7 +52,7 @@ export const RecommendationView: React.FC<RecommendationViewProps> = ({
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
       {/* Header */}
       <div className="pb-6 border-b border-[#DCE5DF] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -66,14 +67,53 @@ export const RecommendationView: React.FC<RecommendationViewProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={handleReset}
-          className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[#DCE5DF] bg-white hover:bg-[#F7F9F6] text-[#182522] transition-colors flex items-center gap-1.5 self-start sm:self-auto"
-        >
-          <RotateCcw className="w-3.5 h-3.5 text-[#64716C]" />
-          <span>Reset Weights</span>
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => setShowTeacherScript(!showTeacherScript)}
+            className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors flex items-center gap-1.5 shadow-2xs ${
+              showTeacherScript
+                ? 'bg-[#123B32] text-white border-[#123B32]'
+                : 'bg-[#EAF5EF] hover:bg-[#d8ede1] text-[#123B32] border-[#53A878]/50'
+            }`}
+          >
+            <span>🎓</span>
+            <span>{showTeacherScript ? 'Hide Script' : 'What to Say to Teacher'}</span>
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[#DCE5DF] bg-white hover:bg-[#F7F9F6] text-[#182522] transition-colors flex items-center gap-1.5"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-[#64716C]" />
+            <span>Reset Weights</span>
+          </button>
+        </div>
       </div>
+
+      {/* Expandable Teacher Demo Script Card */}
+      {showTeacherScript && (
+        <div className="p-4 rounded-xl border border-[#53A878]/40 bg-[#EAF5EF]/80 space-y-3 animate-in fade-in duration-150">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🎓</span>
+              <span className="font-bold text-xs uppercase tracking-wider text-[#123B32]">
+                Presentation Cue: Explaining MCDA (Multi-Criteria Decision Analysis)
+              </span>
+            </div>
+            <span className="text-[11px] font-mono text-[#176B5B] font-semibold">
+              45-Second Script
+            </span>
+          </div>
+          <div className="bg-white p-3 rounded-lg border border-[#DCE5DF] text-xs space-y-2">
+            <p className="font-semibold text-[#176B5B]">🗣️ Say this word-for-word to your teacher:</p>
+            <p className="italic text-[#182522] leading-relaxed">
+              "Professor, real-world engineering decisions involve trade-offs between economics, circularity, and carbon footprints. Rather than relying on gut feelings, BladeCycle uses Multi-Criteria Decision Analysis (MCDA). Watch what happens when I adjust these sliders: if we prioritize economics, Cement Kiln ranks #1. But if we increase the weight for Circular Mass Recovery and Output Quality (for instance under strict EU recycling directives), Pyrolysis and Mechanical recycling move up. Every score is mathematically normalized, and the software writes an automated defensibility justification for why each route placed where it did."
+            </p>
+            <div className="pt-2 border-t border-[#DCE5DF] flex flex-wrap items-center gap-4 text-[11px] text-[#64716C]">
+              <span>👉 <strong>Demo Action:</strong> Slide 'Cost Efficiency' down to 10 and slide 'Circular Mass Recovery' up to 80 to demonstrate ranking changes in front of your teacher!</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Criteria Weight Editor & Constraints */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

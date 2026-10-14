@@ -186,3 +186,21 @@ export function downloadCSV(filename: string, content: string): void {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+export function exportScenarioToJSON(scenario: Scenario): string {
+  incrementExportedReportsCount();
+  return JSON.stringify(scenario, null, 2);
+}
+
+export function downloadJSON(filename: string, content: string): void {
+  const blob = new Blob([content], { type: 'application/json;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+

@@ -113,6 +113,7 @@ export function App() {
         activeScenarioId={activeScenarioId}
         onSelectScenario={handleSelectScenario}
         onLoadDemo={handleLoadDemo}
+        onLoadScenario={handleSaveScenario}
       />
 
       {/* Main Content Area */}
@@ -121,6 +122,7 @@ export function App() {
           <LandingPage
             onStartAnalysis={handleNewAnalysis}
             onExploreDemo={handleLoadDemo}
+            onLoadPreset={handleSaveScenario}
             onNavigate={setCurrentView}
           />
         )}
@@ -132,6 +134,7 @@ export function App() {
             onSelectScenario={handleSelectScenario}
             onNewAnalysis={handleNewAnalysis}
             onLoadDemo={handleLoadDemo}
+            onLoadPreset={handleSaveScenario}
             onDuplicateScenario={handleDuplicate}
             onDeleteScenario={handleDelete}
             onNavigate={setCurrentView}
@@ -151,6 +154,7 @@ export function App() {
             scenario={activeScenario}
             run={activeCalculationRun}
             onEditScenario={handleEditScenario}
+            onUpdateScenario={handleSaveScenario}
             onNavigate={setCurrentView}
             onExportCSV={handleExportCSV}
           />
