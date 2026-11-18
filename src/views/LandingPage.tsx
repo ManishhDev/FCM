@@ -15,7 +15,8 @@ import {
   Flame,
   Factory,
   Cpu,
-  Sparkles
+  Sparkles,
+  FlaskConical
 } from 'lucide-react';
 import { EVIDENCE_SOURCES, PRESET_SCENARIOS } from '../lib/constants';
 import { Scenario } from '../types';
@@ -61,10 +62,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </button>
             <button
               onClick={onExploreDemo}
-              className="w-full sm:w-auto px-6 py-3.5 text-sm font-semibold rounded-xl bg-white hover:bg-slate-50 text-[#123B32] border border-[#DCE5DF] shadow-xs transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3.5 text-sm font-semibold rounded-xl bg-white hover:bg-slate-50 text-[#123B32] border border-[#DCE5DF] shadow-xs transition-colors flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
             >
               <Sparkles className="w-4 h-4 text-[#A96512]" />
               <span>Explore Instant Demo (100 t)</span>
+            </button>
+            <button
+              onClick={() => onNavigate('composite_lab')}
+              className="w-full sm:w-auto px-6 py-3.5 text-sm font-semibold rounded-xl bg-[#EAF5EF] hover:bg-[#d8ede1] text-[#123B32] border border-[#53A878]/40 shadow-xs transition-colors flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+            >
+              <FlaskConical className="w-4 h-4 text-[#176B5B]" />
+              <span>Virtual Testing Lab</span>
             </button>
           </div>
 

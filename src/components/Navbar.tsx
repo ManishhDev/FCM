@@ -15,7 +15,8 @@ import {
   CheckSquare,
   HelpCircle,
   Menu,
-  X
+  X,
+  FlaskConical
 } from 'lucide-react';
 import { UserGuideModal } from './UserGuideModal';
 import { TeacherPresentationModal } from './TeacherPresentationModal';
@@ -25,6 +26,7 @@ export type AppView =
   | 'dashboard' 
   | 'builder' 
   | 'compare' 
+  | 'composite_lab'
   | 'recommendation' 
   | 'sensitivity' 
   | 'scenario_compare' 
@@ -58,11 +60,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
 
   const navItems = [
-    { id: 'compare' as AppView, label: 'Workspace', icon: Layers, requiresScenario: true },
-    { id: 'recommendation' as AppView, label: 'Decision Ranking', icon: Scale, requiresScenario: true },
+    { id: 'compare' as AppView, label: 'Recycling', icon: Layers, requiresScenario: true },
+    { id: 'composite_lab' as AppView, label: 'Composite Lab', icon: FlaskConical, requiresScenario: true },
+    { id: 'recommendation' as AppView, label: 'Ranking', icon: Scale, requiresScenario: true },
     { id: 'sensitivity' as AppView, label: 'Sensitivity', icon: SlidersHorizontal, requiresScenario: true },
-    { id: 'dashboard' as AppView, label: 'Saved Batches', icon: BarChart3 },
-    { id: 'evidence' as AppView, label: 'Evidence & Science', icon: BookOpen },
+    { id: 'dashboard' as AppView, label: 'Batches', icon: BarChart3 },
+    { id: 'evidence' as AppView, label: 'Evidence', icon: BookOpen },
   ];
 
   const handleNavClick = (view: AppView) => {
@@ -121,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'bg-[#EAF5EF] text-[#123B32] font-semibold'
                       : 'text-[#64716C] hover:text-[#182522] hover:bg-[#F7F9F6]'

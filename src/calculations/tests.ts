@@ -7,6 +7,16 @@ import { runMonteCarloSimulation } from './sensitivity';
 import { DEMO_SCENARIO, DEFAULT_PATHWAYS } from '../lib/constants';
 import { calculateScenario } from './index';
 import { generateCSVReport } from '../lib/scenarioStorage';
+import {
+  FEEDSTOCK_CHARACTERISATIONS,
+  SAMPLE_LAB_CSV,
+  createDefaultFormulation,
+  evaluateApplicationSuitability,
+  parseLabCSV,
+  simulateCompressionTest,
+  simulateFlexuralTest,
+  simulateTensileTest,
+} from './compositeEngine';
 
 export interface TestResult {
   name: string;
@@ -312,6 +322,77 @@ export function runCalculationTestSuite(): TestResult[] {
     });
   } catch (err: any) {
     results.push({ name: 'Reporting: CSV generation', category: 'reporting', passed: false, message: err.message });
+  }
+
+  // 9. COMPOSITE PRODUCT & VIRTUAL TESTING LAB TESTS (FR-10 to FR-19)
+  try {
+    // 9.1 Tensile test math check (13x4 mm, 1500 N, 8 GPa, 100 mm -> 28.85 MPa, 0.361 mm, Fmax = 3120 N)
+    const tensileRes = simulateTensileTest({
+      geometry: { widthMm: 13, thicknessMm: 4, gaugeLengthMm: 100, supportSpanMm: 64, notchDepthMm: 0 },
+      modulusGPa: 8,
+      strengthLimitMPa: 60,
+      appliedLoadN: 1500,
+      specimenId: 'TEST-T01',
+      provenance: 'illustrative',
+    });
+    const stressOk = Math.abs(tensileRes.primaryMetricValue - 28.85) < 0.05;
+    const limitOk = tensileRes.strengthLimitLoadN === 3120;
+    results.push({
+      name: 'Composite Lab: Uniaxial tensile stress & strength-limit load verification (28.85 MPa, 3,120 N)',
+      category: 'material',
+      passed: stressOk && limitOk && !tensileRes.isFailure,
+      message: `Calculated stress=${tensileRes.primaryMetricValue} MPa, limitLoad=${tensileRes.strengthLimitLoadN} N`,
+    });
+
+    // 9.2 Flexural 3-point bending calculation
+    const flexRes = simulateFlexuralTest({
+      geometry: { widthMm: 13, thicknessMm: 4, gaugeLengthMm: 100, supportSpanMm: 64, notchDepthMm: 0 },
+      flexuralModulusGPa: 7.5,
+      flexuralStrengthMPa: 85,
+      appliedLoadN: 200,
+      specimenId: 'TEST-F01',
+      provenance: 'predicted',
+    });
+    // sigma_f = 3*200*64 / (2*13*16) = 38400 / 416 = 92.31 MPa -> exceeds 85 MPa
+    results.push({
+      name: 'Composite Lab: 3-point bending flexural stress & limit detection (ASTM D7264)',
+      category: 'material',
+      passed: Math.abs(flexRes.primaryMetricValue - 92.31) < 0.1 && flexRes.isFailure,
+      message: `Flexural stress=${flexRes.primaryMetricValue} MPa, failure=${flexRes.isFailure}`,
+    });
+
+    // 9.3 Compression Euler buckling check on slender column
+    const compRes = simulateCompressionTest({
+      geometry: { widthMm: 13, thicknessMm: 2, gaugeLengthMm: 120, supportSpanMm: 64, notchDepthMm: 0 },
+      compressiveModulusGPa: 7.0,
+      compressiveStrengthMPa: 110,
+      appliedLoadN: 1000,
+      specimenId: 'TEST-C01',
+      provenance: 'predicted',
+    });
+    results.push({
+      name: 'Composite Lab: Compression crushing vs Euler buckling mode detection (ASTM D6641)',
+      category: 'material',
+      passed: compRes.predictedFailureMode.toLowerCase().includes('buckling'),
+      message: `Detected mode: ${compRes.predictedFailureMode}`,
+    });
+
+    // 9.4 Cement-kiln feedstock exclusion & scientific provenance gate
+    const cementFeedstock = FEEDSTOCK_CHARACTERISATIONS.cement_kiln;
+    const panelForm = createDefaultFormulation('mechanical', 'composite_panel');
+    const suitNoCsv = evaluateApplicationSuitability(panelForm, false);
+    const parsedCsv = parseLabCSV(SAMPLE_LAB_CSV, 13, 4, 100);
+    results.push({
+      name: 'Composite Lab: Cement-kiln feedstock exclusion, CSV parser, and unvalidated candidate gate',
+      category: 'material',
+      passed:
+        !cementFeedstock.eligibleForCompositeProduct &&
+        suitNoCsv.statusCategory === 'research_candidate' &&
+        parsedCsv.length === 10,
+      message: `Cement-kiln blocked=${!cementFeedstock.eligibleForCompositeProduct}, non-measured status=${suitNoCsv.statusCategory}, CSV pts=${parsedCsv.length}`,
+    });
+  } catch (err: any) {
+    results.push({ name: 'Composite Lab: Virtual testing suite', category: 'material', passed: false, message: err.message });
   }
 
   return results;

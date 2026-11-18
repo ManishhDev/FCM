@@ -31,7 +31,8 @@ import {
   ArrowRight,
   Sliders,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  FlaskConical
 } from 'lucide-react';
 
 interface ComparisonViewProps {
@@ -139,15 +140,22 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
               <span>Edit Details</span>
             </button>
             <button
+              onClick={() => onNavigate('composite_lab')}
+              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#EAF5EF] hover:bg-[#d5ece0] text-[#123B32] flex items-center gap-1.5 transition-colors border border-[#176B5B]/30 whitespace-nowrap shrink-0"
+            >
+              <FlaskConical className="w-3.5 h-3.5 text-[#176B5B]" />
+              <span>Composite Testing Lab</span>
+            </button>
+            <button
               onClick={() => onNavigate('recommendation')}
-              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#EAF5EF] hover:bg-[#d5ece0] text-[#123B32] flex items-center gap-1.5 transition-colors border border-[#176B5B]/30"
+              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#EAF5EF] hover:bg-[#d5ece0] text-[#123B32] flex items-center gap-1.5 transition-colors border border-[#176B5B]/30 whitespace-nowrap shrink-0"
             >
               <Scale className="w-3.5 h-3.5 text-[#176B5B]" />
               <span>Decision Ranking</span>
             </button>
             <button
               onClick={() => onNavigate('report')}
-              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#123B32] hover:bg-[#176B5B] text-white flex items-center gap-1.5 shadow-xs transition-colors"
+              className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#123B32] hover:bg-[#176B5B] text-white flex items-center gap-1.5 shadow-xs transition-colors whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export Report</span>

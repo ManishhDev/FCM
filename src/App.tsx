@@ -12,6 +12,7 @@ import { EvidenceLibraryView } from './views/EvidenceLibraryView';
 import { MethodologyView } from './views/MethodologyView';
 import { ReportView } from './views/ReportView';
 import { TestSuiteView } from './views/TestSuiteView';
+import { CompositeLabView } from './views/CompositeLabView';
 import { 
   getStoredScenarios, 
   saveScenario, 
@@ -157,6 +158,13 @@ export function App() {
             onUpdateScenario={handleSaveScenario}
             onNavigate={setCurrentView}
             onExportCSV={handleExportCSV}
+          />
+        )}
+
+        {currentView === 'composite_lab' && (
+          <CompositeLabView
+            scenario={activeScenario}
+            run={activeCalculationRun}
           />
         )}
 
